@@ -1,0 +1,60 @@
+
+<nav class="sticky top-0 z-40 border-b bg-card/95 backdrop-blur">
+    <div class="ui-container flex h-16 items-center justify-between">
+
+        <a href="/" class="flex items-center gap-2">
+            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
+                V
+            </div>
+
+            <span class="text-lg font-bold tracking-tight">
+                ViajaFácil
+            </span>
+        </a>
+
+        <div class="hidden items-center gap-6 md:flex">
+            <a href="/" class="text-sm font-medium hover:text-primary">
+                Inicio
+            </a>
+
+            <a href="/mis-reservas" class="text-sm font-medium hover:text-primary">
+                Mis reservas
+            </a>
+
+            <a href="/publicar-viaje" class="text-sm font-medium hover:text-primary">
+                Publicar viaje
+            </a>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button
+                type="button"
+                id="btn-tema"
+                class="rounded-md p-2 hover:bg-accent"
+                aria-label="Cambiar tema">
+                ◐
+            </button>
+
+            <a href="/login"
+               class="ui-button ui-button-outline">
+                Iniciar sesión
+            </a>
+
+            <button
+                type="button"
+                id="btn-menu"
+                class="rounded-md p-2 hover:bg-accent md:hidden"
+                aria-label="Abrir menú">
+                ☰
+            </button>
+        </div>
+    </div>
+
+    <div id="menu-movil" class="hidden border-t p-4 md:hidden">
+        <div class="flex flex-col gap-4">
+            <a href="/">Inicio</a>
+            <a href="/mis-reservas">Mis reservas</a>
+            <a href="/publicar-viaje">Publicar viaje</a>
+        </div>
+    </div>
+</nav>

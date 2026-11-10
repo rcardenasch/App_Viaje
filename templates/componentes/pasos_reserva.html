@@ -1,0 +1,43 @@
+
+{% set etapas = [
+    ('01', 'Viaje'),
+    ('02', 'Asientos'),
+    ('03', 'Pasajeros'),
+    ('04', 'Confirmación')
+] %}
+
+<div class="mx-auto w-full max-w-3xl px-3 py-6">
+    <div class="flex items-center justify-between">
+
+        {% for numero, nombre in etapas %}
+
+        <div class="flex flex-1 flex-col items-center gap-2">
+
+            <div class="
+                flex h-9 w-9 items-center justify-center rounded-full border text-sm font-semibold
+                {% if loop.index == paso %}
+                    border-primary bg-primary text-primary-foreground
+                {% elif loop.index < paso %}
+                    border-success bg-success text-success-foreground
+                {% else %}
+                    border-border bg-muted text-muted-foreground
+                {% endif %}
+            ">
+                {% if loop.index < paso %}✓{% else %}{{ numero }}{% endif %}
+            </div>
+
+            <span class="text-center text-xs font-medium
+                {% if loop.index == paso %}text-primary{% else %}text-muted-foreground{% endif %}">
+                {{ nombre }}
+            </span>
+
+        </div>
+
+        {% if not loop.last %}
+        <div class="mb-6 h-px flex-1 bg-border"></div>
+        {% endif %}
+
+        {% endfor %}
+
+    </div>
+</div>

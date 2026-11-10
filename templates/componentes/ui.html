@@ -1,0 +1,152 @@
+
+{% macro boton(texto, variante='primary', tipo='button', clases='', id='', disabled=false) %}
+<button
+    type="{{ tipo }}"
+    {% if id %}id="{{ id }}"{% endif %}
+    {% if disabled %}disabled{% endif %}
+    class="ui-button
+        {% if variante == 'primary' %}ui-button-primary
+        {% elif variante == 'secondary' %}ui-button-secondary
+        {% elif variante == 'outline' %}ui-button-outline
+        {% elif variante == 'ghost' %}ui-button-ghost
+        {% elif variante == 'danger' %}ui-button-danger
+        {% endif %}
+        {{ clases }}">
+    {{ texto }}
+</button>
+{% endmacro %}
+
+
+{% macro tarjeta(titulo='', descripcion='', clases='') %}
+<div class="ui-card {{ clases }}">
+    {% if titulo or descripcion %}
+    <div class="ui-card-header">
+        {% if titulo %}
+        <h3 class="ui-card-title">{{ titulo }}</h3>
+        {% endif %}
+
+        {% if descripcion %}
+        <p class="ui-card-description">{{ descripcion }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="ui-card-content">
+        {{ caller() }}
+    </div>
+</div>
+{% endmacro %}
+
+
+{% macro campo(nombre, etiqueta, tipo='text', placeholder='', valor='', requerido=false, clases='') %}
+<div class="space-y-2 {{ clases }}">
+    <label for="{{ nombre }}" class="ui-label">
+        {{ etiqueta }}
+        {% if requerido %}
+        <span class="text-destructive">*</span>
+        {% endif %}
+    </label>
+
+    <input
+        type="{{ tipo }}"
+        id="{{ nombre }}"
+        name="{{ nombre }}"
+        value="{{ valor }}"
+        placeholder="{{ placeholder }}"
+        {% if requerido %}required{% endif %}
+        class="ui-input">
+</div>
+{% endmacro %}
+
+
+{% macro etiqueta_estado(texto, estado='primary') %}
+<span class="ui-badge
+    {% if estado == 'success' %}ui-badge-success
+    {% elif estado == 'warning' %}ui-badge-warning
+    {% elif estado == 'danger' %}ui-badge-danger
+    {% else %}ui-badge-primary
+    {% endif %}">
+    {{ texto }}
+</span>
+{% endmacro %}
+
+
+{% macro alerta(titulo, mensaje, tipo='success') %}
+<div class="ui-alert
+    {% if tipo == 'success' %}ui-alert-success
+    {% elif tipo == 'warning' %}ui-alert-warning
+    {% else %}ui-alert-danger
+    {% endif %}">
+    <p class="font-semibold">{{ titulo }}</p>
+    <p class="mt-1">{{ mensaje }}</p>
+</div>
+{% endmacro %}
+
+
+{% macro divisor() %}
+<div class="ui-divider my-4"></div>
+{% endmacro %}
+
+
+{% macro estadistica(titulo, valor, descripcion='', icono='') %}
+<div class="ui-card p-5">
+    <div class="flex items-center justify-between">
+        <p class="text-sm font-medium text-muted-foreground">
+            {{ titulo }}
+        </p>
+        <span class="text-muted-foreground">{{ icono }}</span>
+    </div>
+
+    <div class="mt-3">
+        <h3 class="text-3xl font-bold tracking-tight">
+            {{ valor }}
+        </h3>
+
+        {% if descripcion %}
+        <p class="mt-1 text-xs text-muted-foreground">
+            {{ descripcion }}
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+
+
+{% macro modal(id, titulo, descripcion='') %}
+<div
+    id="{{ id }}"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="{{ id }}-titulo">
+
+    <div class="w-full max-w-lg rounded-xl border bg-card shadow-xl">
+
+        <div class="flex items-start justify-between border-b p-5">
+            <div>
+                <h2 id="{{ id }}-titulo" class="text-lg font-semibold">
+                    {{ titulo }}
+                </h2>
+
+                {% if descripcion %}
+                <p class="mt-1 text-sm text-muted-foreground">
+                    {{ descripcion }}
+                </p>
+                {% endif %}
+            </div>
+
+            <button
+                type="button"
+                data-modal-cerrar="{{ id }}"
+                aria-label="Cerrar"
+                class="rounded-md p-2 hover:bg-accent">
+                ✕
+            </button>
+        </div>
+
+        <div class="p-5">
+            {{ caller() }}
+        </div>
+    </div>
+</div>
+{% endmacro %}

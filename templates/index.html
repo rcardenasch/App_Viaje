@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<title>Reserva de Viajes</title>
+
+</head>
+
+<body class="bg-slate-100">
+
+<div class="container mx-auto p-5">
+
+<h1
+class="text-4xl font-bold text-center mb-8">
+Reserva tu Viaje
+</h1>
+
+<div
+class="bg-white rounded-xl shadow p-5">
+
+<div
+class="grid md:grid-cols-3 gap-4">
+
+<input
+id="origen"
+placeholder="Origen"
+class="border p-3 rounded">
+
+<input
+id="destino"
+placeholder="Destino"
+class="border p-3 rounded">
+
+<input
+type="date"
+id="fecha"
+class="border p-3 rounded">
+
+</div>
+
+<button
+id="buscar"
+class="mt-4 bg-blue-600 text-white px-6 py-3 rounded">
+
+Buscar Viajes
+
+</button>
+
+<button
+    class="
+        inline-flex
+        items-center
+        justify-center
+        whitespace-nowrap
+        rounded-md
+        text-sm
+        font-medium
+        transition-colors
+
+        bg-primary
+        text-primary-foreground
+
+        hover:bg-primary/90
+
+        h-10
+        px-4
+        py-2
+
+        focus-visible:outline-none
+        focus-visible:ring-2
+        focus-visible:ring-ring
+
+        disabled:pointer-events-none
+        disabled:opacity-50
+    "
+>
+    Buscar viajes 2
+</button>
+
+</div>
+
+<div
+    class="
+        rounded-xl
+        border
+        bg-card
+        text-card-foreground
+        shadow-sm
+        transition-all
+        hover:shadow-md
+    "
+>
+
+    <div class="p-6">
+
+        <div
+            class="
+                flex
+                items-center
+                justify-between
+            "
+        >
+
+            <div>
+
+                <p class="text-sm text-muted-foreground">
+                    Origen
+                </p>
+
+                <h3 class="text-xl font-semibold">
+                    Lima
+                </h3>
+
+            </div>
+
+            <div class="text-muted-foreground">
+                →
+            </div>
+
+            <div class="text-right">
+
+                <p class="text-sm text-muted-foreground">
+                    Destino
+                </p>
+
+                <h3 class="text-xl font-semibold">
+                    Huancayo
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="
+                mt-6
+                flex
+                items-center
+                justify-between
+                border-t
+                pt-4
+            "
+        >
+
+            <div>
+
+                <p class="text-sm text-muted-foreground">
+                    Salida
+                </p>
+
+                <p class="font-medium">
+                    07:00 AM
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <p class="text-sm text-muted-foreground">
+                    Precio
+                </p>
+
+                <p class="text-xl font-bold">
+                    S/ 35.00
+                </p>
+
+            </div>
+
+
+            <button
+                class="
+                    rounded-md
+                    bg-primary
+                    px-4
+                    py-2
+                    text-sm
+                    font-medium
+                    text-primary-foreground
+                    hover:bg-primary/90
+                "
+            >
+                Seleccionar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div
+id="resultado-viajes"
+class="mt-8">
+</div>
+
+<div
+id="contenedor-asientos"
+class="mt-10">
+</div>
+
+</div>
+
+<script src="/static/js/seats.js"></script>
+
+</body>
+</html>
