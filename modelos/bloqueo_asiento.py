@@ -11,9 +11,11 @@ from sqlalchemy import (
     text
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
 
 from modelos import db
-from modelos.viaje import Viaje
+if TYPE_CHECKING:
+    from modelos.viaje import Viaje
 
 
 class BloqueoAsiento(db.Model):

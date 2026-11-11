@@ -7,9 +7,11 @@ from sqlalchemy import (
     UniqueConstraint
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
+from typing import TYPE_CHECKING, List, Optional
 from modelos import db
-from modelos.vehiculo import Vehiculo
+
+if TYPE_CHECKING:
+    from modelos.vehiculo import Vehiculo
 
 
 class PlantillaAsientos(db.Model):
@@ -32,7 +34,7 @@ class PlantillaAsientos(db.Model):
         nullable=False
     )
 
-    descripcion: Mapped[str | None] = mapped_column(
+    descripcion: Mapped[Optional[str]] = mapped_column(
         String(250)
     )
 
@@ -51,7 +53,7 @@ class PlantillaAsientos(db.Model):
         nullable=False
     )
 
-    distribucion: Mapped[list] = mapped_column(
+    distribucion: Mapped[List] = mapped_column(
         JSON,
         nullable=False
     )
@@ -61,6 +63,6 @@ class PlantillaAsientos(db.Model):
         default=True
     )
 
-    vehiculos: Mapped[list["Vehiculo"]] = relationship(
+    vehiculos: Mapped[List["Vehiculo"]] = relationship(
         back_populates="plantilla"
     )

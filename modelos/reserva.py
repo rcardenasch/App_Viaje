@@ -1,6 +1,6 @@
 
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, time, timezone
 from decimal import Decimal
 
 from sqlalchemy import (
@@ -14,12 +14,13 @@ from sqlalchemy import (
     text
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
+from typing import TYPE_CHECKING, Optional
 from modelos import db
-from modelos.asiento import Asiento
-from modelos.usuario import Usuario
-from modelos.viaje import Viaje
 
+if TYPE_CHECKING:
+    from modelos.asiento import Asiento
+    from modelos.usuario import Usuario
+    from modelos.viaje import Viaje
 
 class Reserva(db.Model):
 
@@ -58,7 +59,7 @@ class Reserva(db.Model):
         default=lambda: str(uuid.uuid4())
     )
 
-    clave_idempotencia: Mapped[str | None] = mapped_column(
+    clave_idempotencia: Mapped[Optional[str]] = mapped_column(
         String(100),
         unique=True
     )
@@ -97,7 +98,7 @@ class Reserva(db.Model):
         default=lambda: datetime.now(timezone.utc)
     )
 
-    fecha_confirmacion: Mapped[datetime | None] = mapped_column(
+    fecha_confirmacion: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True)
     )
 

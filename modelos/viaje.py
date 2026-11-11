@@ -13,12 +13,13 @@ from sqlalchemy import (
     CheckConstraint
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
+from typing import TYPE_CHECKING, List, Optional
 from modelos import db
-from modelos.bloqueo_asiento import BloqueoAsiento
-from modelos.reserva import Reserva
-from modelos.vehiculo import Vehiculo
 
+if TYPE_CHECKING:
+    from modelos.bloqueo_asiento import BloqueoAsiento
+    from modelos.reserva import Reserva
+    from modelos.vehiculo import Vehiculo 
 
 class Viaje(db.Model):
 
@@ -68,7 +69,7 @@ class Viaje(db.Model):
         nullable=False
     )
 
-    hora_llegada: Mapped[time | None] = mapped_column(
+    hora_llegada: Mapped[Optional[time]] = mapped_column(
         Time
     )
 
@@ -92,10 +93,10 @@ class Viaje(db.Model):
         back_populates="viajes"
     )
 
-    reservas: Mapped[list["Reserva"]] = relationship(
+    reservas: Mapped[List["Reserva"]] = relationship(
         back_populates="viaje"
     )
 
-    bloqueos: Mapped[list["BloqueoAsiento"]] = relationship(
+    bloqueos: Mapped[List["BloqueoAsiento"]] = relationship(
         back_populates="viaje"
     )

@@ -3,10 +3,13 @@ from datetime import datetime, timezone
 
 from sqlalchemy import String, DateTime, Boolean, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
+from typing import TYPE_CHECKING, List
+from typing import Optional
 from modelos import db
-from modelos.reserva import Reserva
-from modelos.vehiculo import Vehiculo
+
+if TYPE_CHECKING:
+    from modelos.reserva import Reserva
+    from modelos.vehiculo import Vehiculo
 
 
 class Usuario(db.Model):
@@ -41,7 +44,7 @@ class Usuario(db.Model):
         index=True
     )
 
-    telefono: Mapped[str | None] = mapped_column(
+    telefono: Mapped[Optional[str]] = mapped_column(
         String(30)
     )
 
@@ -67,11 +70,11 @@ class Usuario(db.Model):
         default=lambda: datetime.now(timezone.utc)
     )
 
-    vehiculos: Mapped[list["Vehiculo"]] = relationship(
+    vehiculos: Mapped[List["Vehiculo"]] = relationship(
         back_populates="propietario"
     )
 
-    reservas: Mapped[list["Reserva"]] = relationship(
+    reservas: Mapped[List["Reserva"]] = relationship(
         back_populates="pasajero"
     )
 

@@ -1,4 +1,5 @@
 
+from typing import TYPE_CHECKING, List
 from sqlalchemy import (
     String,
     Integer,
@@ -8,9 +9,10 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from modelos import db
-from modelos.reserva import Reserva
-from modelos.vehiculo import Vehiculo
 
+if TYPE_CHECKING:
+    from modelos.vehiculo import Vehiculo
+    from modelos.reserva import Reserva
 
 class Asiento(db.Model):
 
@@ -53,6 +55,6 @@ class Asiento(db.Model):
         back_populates="asientos"
     )
 
-    reservas: Mapped[list["Reserva"]] = relationship(
+    reservas: Mapped[List["Reserva"]] = relationship(
         back_populates="asiento"
     )

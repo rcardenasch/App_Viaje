@@ -7,13 +7,14 @@ from sqlalchemy import (
     CheckConstraint
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
+from typing import TYPE_CHECKING, List, Optional
 from modelos import db
-from modelos.asiento import Asiento
-from modelos.plantilla_asientos import PlantillaAsientos
-from modelos.usuario import Usuario
-from modelos.viaje import Viaje
 
+if TYPE_CHECKING: 
+    from modelos.asiento import Asiento
+    from modelos.plantilla_asientos import PlantillaAsientos
+    from modelos.usuario import Usuario
+    from modelos.viaje import Viaje
 
 class Vehiculo(db.Model):
 
@@ -51,7 +52,7 @@ class Vehiculo(db.Model):
         nullable=False
     )
 
-    marca: Mapped[str | None] = mapped_column(
+    marca: Mapped[Optional[str]] = mapped_column(
         String(80)
     )
 
@@ -83,11 +84,11 @@ class Vehiculo(db.Model):
         back_populates="vehiculos"
     )
 
-    asientos: Mapped[list["Asiento"]] = relationship(
+    asientos: Mapped[List["Asiento"]] = relationship(
         back_populates="vehiculo",
         cascade="all, delete-orphan"
     )
 
-    viajes: Mapped[list["Viaje"]] = relationship(
+    viajes: Mapped[List["Viaje"]] = relationship(
         back_populates="vehiculo"
     )

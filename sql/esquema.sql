@@ -71,3 +71,46 @@ CREATE TABLE reservas (
 CREATE UNIQUE INDEX uq_reserva_asiento_viaje
 ON reservas(id_viaje,id_asiento)
 WHERE estado='CONFIRMADO';
+
+CREATE TABLE bloqueos_asientos (
+    id_bloqueo SERIAL PRIMARY KEY,
+    id_viaje INTEGER NOT NULL,
+    id_asiento INTEGER NOT NULL,
+    id_usuario INTEGER NOT NULL,
+    token VARCHAR(36) NOT NULL UNIQUE,
+    estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO',
+    fecha_inicio TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    fecha_expiracion TIMESTAMPTZ NOT NULL,
+
+    -- Llaves foráneas
+    CONSTRAINT fk_bloqueos_viaje 
+        FOREIGN KEY (id_viaje) REFERENCES viajes (id_viaje),
+    CONSTRAINT fk_bloqueos_asiento 
+        FOREIGN KEY (id_asiento) REFERENCES asientos (id_asiento),
+    CONSTRAINT fk_bloqueos_usuario 
+        FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario)
+);
+
+-- Índices simples (equivalentes a index=True en las columnas)
+CREATE INDEX ix_bloqueos_asientos_id_viaje ON bloqueos_asientos (id_viaje);
+CREATE INDEX ix_bloqueos_asientos_id_asiento ON bloqueos_asientos (id_asiento);
+CREATE INDEX ix_bloqueos_asientos_id_usuario ON bloqueos_asientos (id_usuario);
+
+-- Índice único parcial (equivalente a postgresql_where=text("estado = 'ACTIVO'"))
+CREATE UNIQUE INDEX uq_bloqueo_viaje_asiento_activo 
+    ON bloqueos_asientos (id_viaje, id_asiento) 
+    WHERE estado = 'ACTIVO';
+
+    CREATE TABLE plantillas_asientos (
+    id_plantilla SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion VARCHAR(250),
+    filas INTEGER NOT NULL,
+    columnas INTEGER NOT NULL,
+    cantidad_asientos INTEGER NOT NULL,
+    distribucion JSONB NOT NULL,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+
+    -- Restricción única
+    CONSTRAINT uq_plantilla_nombre UNIQUE (nombre)
+);

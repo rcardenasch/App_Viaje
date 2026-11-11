@@ -1,7 +1,7 @@
 Flask
 Flask-SQLAlchemy
 Flask-Migrate
-psycopg[binary]
+psycopg2
 python-dotenv
 Flask-Login
 Flask-WTF
