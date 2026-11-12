@@ -43,7 +43,7 @@ def _obtener_viaje_bloqueado(id_viaje):
 
 @reservas_bp.get("/reserva")
 @login_required
-def pagina_reserva():
+def reserva():
     return render_template("reserva.html")
 
 

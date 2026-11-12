@@ -2,62 +2,38 @@
 
 {% block content %}
 
-    <div class="container mx-auto p-5">
+<div class="container mx-auto p-5">
 
-        <h1 class="text-4xl font-bold text-center mb-8">
-            Reserva tu Viaje
-        </h1>
+    <h1 class="text-4xl font-bold text-center mb-8">
+        Reserva tu Viaje
+    </h1>
 
-        <div class="bg-white rounded-xl shadow p-5">
+    <div class="bg-white rounded-xl shadow p-5">
 
-            <div class="grid md:grid-cols-3 gap-4">
+        <div class="grid md:grid-cols-3 gap-4">
 
-                <input id="origen" placeholder="Origen" class="border p-3 rounded">
+            <input id="origen" placeholder="Origen" class="border p-3 rounded">
 
-                <input id="destino" placeholder="Destino" class="border p-3 rounded">
+            <input id="destino" placeholder="Destino" class="border p-3 rounded">
 
-                <input type="date" id="fecha" class="border p-3 rounded">
-
-            </div>
-
-            <button id="buscar" class="mt-4 bg-blue-600 text-white px-6 py-3 rounded">
-
-                Buscar Viajes
-
-            </button>
-
-            <button class="
-        inline-flex
-        items-center
-        justify-center
-        whitespace-nowrap
-        rounded-md
-        text-sm
-        font-medium
-        transition-colors
-
-        bg-primary
-        text-primary-foreground
-
-        hover:bg-primary/90
-
-        h-10
-        px-4
-        py-2
-
-        focus-visible:outline-none
-        focus-visible:ring-2
-        focus-visible:ring-ring
-
-        disabled:pointer-events-none
-        disabled:opacity-50 bg-blue-400
-    ">
-                Buscar viajes 2
-            </button>
+            <input type="date" id="fecha" class="border p-3 rounded">
 
         </div>
 
-        <div class="
+        <button id="buscar" class="mt-4 bg-blue-500 text-white px-6 py-3 rounded">
+
+            Buscar Viajes
+
+        </button>
+
+        <a href="{{ url_for('reservas.reserva') }}"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-blue-400">
+            Ir a reserva</a>
+
+
+    </div>
+
+    <div class="
         rounded-xl
         border
         bg-card
@@ -66,44 +42,44 @@
         transition-all
         hover:shadow-md
     ">
-            <div class="p-6">
+        <div class="p-6">
 
-                <div class="
+            <div class="
                 flex
                 items-center
                 justify-between
             ">
-                    <div>
+                <div>
 
-                        <p class="text-sm text-muted-foreground">
-                            Origen
-                        </p>
+                    <p class="text-sm text-muted-foreground">
+                        Origen
+                    </p>
 
-                        <h3 class="text-xl font-semibold">
-                            Lima
-                        </h3>
-
-                    </div>
-
-                    <div class="text-muted-foreground">
-                        →
-                    </div>
-
-                    <div class="text-right">
-
-                        <p class="text-sm text-muted-foreground">
-                            Destino
-                        </p>
-
-                        <h3 class="text-xl font-semibold">
-                            Huancayo
-                        </h3>
-
-                    </div>
+                    <h3 class="text-xl font-semibold">
+                        Lima
+                    </h3>
 
                 </div>
 
-                <div class="
+                <div class="text-muted-foreground">
+                    →
+                </div>
+
+                <div class="text-right">
+
+                    <p class="text-sm text-muted-foreground">
+                        Destino
+                    </p>
+
+                    <h3 class="text-xl font-semibold">
+                        Huancayo
+                    </h3>
+
+                </div>
+
+            </div>
+
+            <div class="
                 mt-6
                 flex
                 items-center
@@ -112,31 +88,31 @@
                 pt-4
             ">
 
-                    <div>
+                <div>
 
-                        <p class="text-sm text-muted-foreground">
-                            Salida
-                        </p>
+                    <p class="text-sm text-muted-foreground">
+                        Salida
+                    </p>
 
-                        <p class="font-medium">
-                            07:00 AM
-                        </p>
+                    <p class="font-medium">
+                        07:00 AM
+                    </p>
 
-                    </div>
+                </div>
 
-                    <div>
+                <div>
 
-                        <p class="text-sm text-muted-foreground">
-                            Precio
-                        </p>
+                    <p class="text-sm text-muted-foreground">
+                        Precio
+                    </p>
 
-                        <p class="text-xl font-bold">
-                            S/ 35.00
-                        </p>
+                    <p class="text-xl font-bold">
+                        S/ 35.00
+                    </p>
 
-                    </div>
+                </div>
 
-                    <button class="
+                <button class="
                     rounded-md
                     bg-primary
                     px-4
@@ -146,30 +122,30 @@
                     text-primary-foreground
                     hover:bg-primary/90
                 ">
-                        Seleccionar
-                    </button>
-
-                </div>
+                    Seleccionar
+                </button>
 
             </div>
 
         </div>
 
-        <div id="resultado-viajes" class="mt-8">
-        </div>
-
-        <div id="contenedor-asientos" class="mt-10">
-        </div>
-
     </div>
-    {% endblock %}
 
-    {% block scripts %}
-    <script src="{{ url_for(
+    <div id="resultado-viajes" class="mt-8">
+    </div>
+
+    <div id="contenedor-asientos" class="mt-10">
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for(
         'static',
         filename='js/seats.js'
     ) }}"></script>
 
-    <script src="/static/js/seats.js"></script>
+<script src="/static/js/seats.js"></script>
 
 {% endblock %}

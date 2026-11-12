@@ -5,6 +5,12 @@ from configuracion import Configuracion
 from modelos import db
 from flask_migrate import Migrate
 
+from rutas.rutas_reservas import reservas_bp
+from rutas.rutas_viajes import viajes_bp
+from rutas.rutas_ubicaciones import ubicaciones_bp
+from rutas.rutas_vehiculos import vehiculos_bp
+
+
 
 def crear_aplicacion():
 
@@ -28,6 +34,12 @@ def crear_aplicacion():
 
 
 app = crear_aplicacion()
+
+
+app.register_blueprint(reservas_bp)
+app.register_blueprint(viajes_bp)
+app.register_blueprint(ubicaciones_bp) 
+app.register_blueprint(vehiculos_bp)
 
 
 if __name__ == "__main__":

@@ -1,17 +1,373 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% block title %}Reservar viaje{% endblock %}
 
 {% block content %}
+<div class="min-h-screen bg-slate-50 py-8 px-4 sm:px-6">
+    <div class="mx-auto max-w-6xl">
+        <div class="mb-8">
+            <p class="text-sm font-semibold uppercase tracking-widest text-indigo-600">App Viaje · Reservas</p>
+            <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Reserva tu próximo viaje</h1>
+            <p class="mt-2 text-slate-500">Completa los pasos y asegura tu asiento de forma sencilla.</p>
+        </div>
 
-<div>
+        <!-- Indicador secuencial -->
+        <nav aria-label="Progreso de reserva" class="mb-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <ol id="stepper" class="grid grid-cols-2 gap-3 sm:grid-cols-5">
+                <li data-step="1" class="step-item step-active"><span class="step-circle">1</span><span>Viaje</span>
+                </li>
+                <li data-step="2" class="step-item"><span class="step-circle">2</span><span>Asiento</span></li>
+                <li data-step="3" class="step-item"><span class="step-circle">3</span><span>Pasajero</span></li>
+                <li data-step="4" class="step-item"><span class="step-circle">4</span><span>Pago</span></li>
+                <li data-step="5" class="step-item"><span class="step-circle">5</span><span>Confirmación</span></li>
+            </ol>
+        </nav>
 
-    <h3> Reservas</h3>
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <main class="min-w-0">
+                <!-- PASO 1 -->
+                <section id="panel-1"
+                    class="step-panel rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+                    <div class="mb-6"><span class="text-sm font-semibold text-indigo-600">PASO 1 DE 5</span>
+                        <h2 class="mt-1 text-xl font-bold text-slate-900">¿A dónde quieres viajar?</h2>
+                        <p class="text-sm text-slate-500">Indica origen, destino y fecha de salida.</p>
+                    </div>
+                    <form id="searchForm" class="grid gap-4 sm:grid-cols-2">
+                        <label class="text-sm font-medium text-slate-700">Ciudad de origen
+                            <input id="origen" required maxlength="100" placeholder="Ej. Ica" class="field mt-2"
+                                autocomplete="off">
+                        </label>
+                        <label class="text-sm font-medium text-slate-700">Ciudad de destino
+                            <input id="destino" required maxlength="100" placeholder="Ej. Lima" class="field mt-2"
+                                autocomplete="off">
+                        </label>
+                        <label class="text-sm font-medium text-slate-700 sm:col-span-2">Fecha de viaje
+                            <input id="fecha" type="date" required class="field mt-2">
+                        </label>
+                        <div class="sm:col-span-2"><button class="btn-primary" type="submit">Buscar viajes <span
+                                    aria-hidden="true">→</span></button></div>
+                    </form>
+                    <div id="tripResults" class="mt-6 space-y-3" aria-live="polite"></div>
+                </section>
+
+                <!-- PASO 2 -->
+                <section id="panel-2"
+                    class="step-panel hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+                    <div class="mb-6"><span class="text-sm font-semibold text-indigo-600">PASO 2 DE 5</span>
+                        <h2 class="mt-1 text-xl font-bold text-slate-900">Selecciona tu asiento</h2>
+                        <p class="text-sm text-slate-500">Los asientos ocupados o bloqueados no se pueden elegir.</p>
+                    </div>
+                    <div class="mb-5 flex flex-wrap gap-4 text-xs text-slate-600"><span><i
+                                class="legend bg-white border border-slate-300"></i>Disponible</span><span><i
+                                class="legend bg-indigo-600"></i>Seleccionado</span><span><i
+                                class="legend bg-slate-300"></i>Ocupado</span></div>
+                    <div class="mx-auto max-w-md rounded-2xl bg-slate-100 p-5">
+                        <div class="mb-5 flex justify-end"><span
+                                class="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-slate-500">CONDUCTOR</span>
+                        </div>
+                        <div id="seatGrid" class="grid grid-cols-4 gap-3"></div>
+                    </div>
+                    <div class="mt-6 flex flex-col-reverse justify-between gap-3 sm:flex-row"><button
+                            class="btn-secondary" data-back="1">← Volver</button><button id="seatContinue"
+                            class="btn-primary" disabled>Continuar con este asiento →</button></div>
+                </section>
+
+                <!-- PASO 3 -->
+                <section id="panel-3"
+                    class="step-panel hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+                    <div class="mb-6"><span class="text-sm font-semibold text-indigo-600">PASO 3 DE 5</span>
+                        <h2 class="mt-1 text-xl font-bold text-slate-900">Datos del pasajero</h2>
+                        <p class="text-sm text-slate-500">Verifica tus datos antes de continuar al pago.</p>
+                    </div>
+                    <form id="passengerForm" class="grid gap-4 sm:grid-cols-2">
+                        <label class="text-sm font-medium text-slate-700">Nombres y apellidos<input id="nombrePasajero"
+                                required class="field mt-2"
+                                value="{{ current_user.nombres }} {{ current_user.apellidos }}"></label>
+                        <label class="text-sm font-medium text-slate-700">Correo electrónico<input id="emailPasajero"
+                                type="email" required class="field mt-2" value="{{ current_user.email }}"></label>
+                        <label class="text-sm font-medium text-slate-700 sm:col-span-2">Teléfono<input
+                                id="telefonoPasajero" type="tel" required class="field mt-2"
+                                value="{{ current_user.telefono or '' }}"></label>
+                        <label class="flex items-start gap-3 text-sm text-slate-600 sm:col-span-2"><input
+                                id="aceptaTerminos" type="checkbox" required
+                                class="mt-1 h-4 w-4 rounded border-slate-300 text-indigo-600"><span>Confirmo que los
+                                datos son correctos y acepto las condiciones del servicio.</span></label>
+                        <div class="flex flex-col-reverse gap-3 sm:col-span-2 sm:flex-row sm:justify-between"><button
+                                type="button" class="btn-secondary" data-back="2">← Volver</button><button
+                                class="btn-primary" type="submit">Continuar al pago →</button></div>
+                    </form>
+                </section>
+
+                <!-- PASO 4 -->
+                <section id="panel-4"
+                    class="step-panel hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+                    <div class="mb-6"><span class="text-sm font-semibold text-indigo-600">PASO 4 DE 5</span>
+                        <h2 class="mt-1 text-xl font-bold text-slate-900">Revisa y paga</h2>
+                        <p class="text-sm text-slate-500">Serás redirigido a la pasarela segura para completar el pago.
+                        </p>
+                    </div>
+                    <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                        <strong>Importante:</strong> el asiento se mantiene bloqueado temporalmente durante 5 minutos.
+                        Completa el pago dentro de ese plazo.</div>
+                    <div class="mt-5 rounded-xl border border-slate-200 p-4">
+                        <div class="flex justify-between text-sm"><span class="text-slate-500">Pasaje</span><strong
+                                id="paymentAmount">S/ 0.00</strong></div>
+                        <div class="mt-2 flex justify-between text-sm"><span
+                                class="text-slate-500">Asiento</span><strong id="paymentSeat">—</strong></div>
+                        <div class="mt-4 border-t border-slate-200 pt-4 flex justify-between"><strong>Total a
+                                pagar</strong><strong id="paymentTotal" class="text-xl text-indigo-700">S/ 0.00</strong>
+                        </div>
+                    </div>
+                    <div id="paymentMessage" class="mt-4 text-sm" aria-live="polite"></div>
+                    <div class="mt-6 flex flex-col-reverse justify-between gap-3 sm:flex-row"><button
+                            class="btn-secondary" data-back="3">← Volver</button><button id="payButton"
+                            class="btn-primary">Pagar ahora de forma segura <span>→</span></button></div>
+                    <p class="mt-4 text-xs text-slate-400">No compartas los datos de tu tarjeta en esta página. El
+                        procesamiento debe realizarse en la pasarela certificada.</p>
+                </section>
+
+                <!-- PASO 5 -->
+                <section id="panel-5"
+                    class="step-panel hidden rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm sm:p-10">
+                    <div
+                        class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl text-emerald-700">
+                        ✓</div>
+                    <span class="mt-5 block text-sm font-semibold text-emerald-700">PASO 5 DE 5</span>
+                    <h2 class="mt-2 text-2xl font-bold text-slate-900">¡Tu viaje está confirmado!</h2>
+                    <p class="mt-2 text-slate-500">El pago fue verificado y tu reserva quedó registrada.</p>
+                    <div class="mx-auto mt-6 max-w-md rounded-xl bg-slate-50 p-5 text-left">
+                        <p class="text-xs uppercase tracking-wider text-slate-400">Código de reserva</p>
+                        <p id="bookingCode" class="mt-1 break-all text-xl font-bold text-indigo-700"></p>
+                        <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="text-slate-400">Ruta</p><strong id="doneRoute"></strong>
+                            </div>
+                            <div>
+                                <p class="text-slate-400">Asiento</p><strong id="doneSeat"></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/api/mis-reservas" class="btn-primary mt-6 inline-flex">Ver mis reservas</a>
+                </section>
+            </main>
+
+            <!-- Resumen persistente -->
+            <aside class="h-fit rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:sticky lg:top-6">
+                <h3 class="font-bold text-slate-900">Resumen de tu viaje</h3>
+                <div class="my-4 border-t border-slate-100"></div>
+                <p id="summaryRoute" class="text-lg font-bold text-slate-800">Selecciona tu ruta</p>
+                <p id="summaryDate" class="mt-1 text-sm text-slate-500">Fecha por definir</p>
+                <div class="my-4 border-t border-slate-100"></div>
+                <div class="flex justify-between text-sm"><span class="text-slate-500">Asiento</span><strong
+                        id="summarySeat">Pendiente</strong></div>
+                <div class="mt-3 flex justify-between text-sm"><span class="text-slate-500">Pasajero</span><strong
+                        id="summaryPassenger" class="max-w-[150px] truncate">—</strong></div>
+                <div class="my-4 border-t border-slate-100"></div>
+                <div class="flex justify-between"><span class="font-semibold">Total</span><strong id="summaryPrice"
+                        class="text-xl text-indigo-700">S/ 0.00</strong></div>
+                <p class="mt-4 text-xs leading-5 text-slate-400">El precio mostrado corresponde al viaje seleccionado.
+                    La reserva se confirma únicamente después de verificar el pago.</p>
+            </aside>
+        </div>
+        <div id="globalMessage" class="mt-5 hidden rounded-xl p-4 text-sm" role="alert"></div>
+    </div>
 </div>
-{% endblock %}
 
+<style>
+    .field {
+        display: block;
+        width: 100%;
+        border: 1px solid #cbd5e1;
+        border-radius: .75rem;
+        padding: .8rem .9rem;
+        color: #0f172a;
+        background: #fff;
+        outline: none
+    }
 
+    .field:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px #6366f122
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .5rem;
+        border-radius: .8rem;
+        background: #4f46e5;
+        padding: .85rem 1.2rem;
+        font-weight: 650;
+        color: white;
+        transition: .2s
+    }
+
+    .btn-primary:hover {
+        background: #4338ca
+    }
+
+    .btn-primary:disabled {
+        opacity: .45;
+        cursor: not-allowed
+    }
+
+    .btn-secondary {
+        border: 1px solid #cbd5e1;
+        border-radius: .8rem;
+        padding: .85rem 1.2rem;
+        font-weight: 600;
+        color: #475569;
+        background: white
+    }
+
+    .step-item {
+        display: flex;
+        align-items: center;
+        gap: .55rem;
+        font-size: .78rem;
+        font-weight: 600;
+        color: #94a3b8
+    }
+
+    .step-circle {
+        display: grid;
+        place-items: center;
+        width: 2rem;
+        height: 2rem;
+        flex: none;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #64748b
+    }
+
+    .step-active {
+        color: #4338ca
+    }
+
+    .step-active .step-circle {
+        background: #4f46e5;
+        color: white
+    }
+
+    .step-done {
+        color: #059669
+    }
+
+    .step-done .step-circle {
+        background: #d1fae5;
+        color: #047857
+    }
+
+    .legend {
+        display: inline-block;
+        width: .75rem;
+        height: .75rem;
+        border-radius: .25rem;
+        margin-right: .35rem;
+        vertical-align: middle
+    }
+
+    .seat {
+        aspect-ratio: 1;
+        border: 1px solid #cbd5e1;
+        border-radius: .65rem;
+        background: white;
+        font-size: .8rem;
+        font-weight: 700;
+        color: #334155
+    }
+
+    .seat.available:hover {
+        border-color: #6366f1;
+        background: #eef2ff
+    }
+
+    .seat.selected {
+        background: #4f46e5;
+        color: white;
+        border-color: #4f46e5
+    }
+
+    .seat.unavailable {
+        background: #cbd5e1;
+        color: #64748b;
+        cursor: not-allowed;
+        border-color: #cbd5e1
+    }
+
+    .seat.empty {
+        visibility: hidden
+    }
+
+    @media(max-width:420px) {
+        .step-item {
+            font-size: .68rem;
+            gap: .3rem
+        }
+
+        .step-circle {
+            width: 1.65rem;
+            height: 1.65rem
+        }
+    }
+</style>
 {% block scripts %}
+<script>
+    (() => {
+        const state = { step: 1, trip: null, seat: null, lockToken: null, lockExpiry: null, idempotencyKey: null, paymentId: null };
+        const $ = id => document.getElementById(id);
+        const money = value => `S/ ${Number(value || 0).toFixed(2)}`;
+        const message = (text, type = 'error') => { const el = $('globalMessage'); el.textContent = text; el.className = `mt-5 rounded-xl p-4 text-sm ${type === 'error' ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-700'}`; };
+        const hideMessage = () => $('globalMessage').classList.add('hidden');
+        const api = async (url, options = {}) => { const response = await fetch(url, { credentials: 'same-origin', headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }, ...options }); const data = await response.json().catch(() => ({})); if (!response.ok || data.ok === false) throw new Error(data.mensaje || data.error || `Error ${response.status}`); return data; };
+        const go = step => { state.step = step; document.querySelectorAll('.step-panel').forEach(x => x.classList.add('hidden')); $(`panel-${step}`).classList.remove('hidden'); document.querySelectorAll('.step-item').forEach(x => { const n = Number(x.dataset.step); x.classList.toggle('step-active', n === step); x.classList.toggle('step-done', n < step); }); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+        document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => go(Number(b.dataset.back))));
+
+        $('fecha').min = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+        $('searchForm').addEventListener('submit', async e => {
+            e.preventDefault(); hideMessage(); $('tripResults').innerHTML = '<p class="text-sm text-slate-500">Buscando opciones…</p>';
+            try {
+                const params = new URLSearchParams({ origen: $('origen').value.trim(), destino: $('destino').value.trim(), fecha: $('fecha').value });
+                const data = await api(`/viajes/?${params}`); const trips = data.datos || [];
+                if (!trips.length) { $('tripResults').innerHTML = '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">No encontramos viajes para esos criterios. Prueba otra fecha.</p>'; return; }
+                $('tripResults').innerHTML = trips.map(t => `<article class="rounded-xl border border-slate-200 p-4 sm:flex sm:items-center sm:justify-between sm:gap-4"><div><p class="font-bold text-slate-900">${esc(t.origen)} <span class="text-indigo-500">→</span> ${esc(t.destino)}</p><p class="mt-1 text-sm text-slate-500">${esc(t.fecha_salida)} · Sale ${esc(t.hora_salida)} ${t.hora_llegada ? `· Llega ${esc(t.hora_llegada)}` : ''}</p><p class="mt-1 text-xs text-slate-400">${t.disponibilidad?.disponibles ?? '?'} asientos disponibles</p></div><div class="mt-3 flex items-center justify-between gap-3 sm:mt-0"><strong class="text-lg text-indigo-700">${money(t.precio)}</strong><button type="button" class="btn-primary choose-trip" data-trip="${t.id_viaje}">Elegir</button></div></article>`).join('');
+                document.querySelectorAll('.choose-trip').forEach(b => b.addEventListener('click', () => selectTrip(trips.find(t => t.id_viaje === Number(b.dataset.trip)))));
+            } catch (err) { $('tripResults').innerHTML = ''; message(err.message); }
+        });
+        function esc(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+        function updateSummary() { if (!state.trip) return; $('summaryRoute').textContent = `${state.trip.origen} → ${state.trip.destino}`; $('summaryDate').textContent = `${state.trip.fecha_salida} · ${state.trip.hora_salida}`; $('summaryPrice').textContent = money(state.trip.precio); $('summarySeat').textContent = state.seat ? `N.º ${state.seat.numero_asiento}` : 'Pendiente'; $('summaryPassenger').textContent = $('nombrePasajero').value || '—'; }
+        async function selectTrip(trip) { state.trip = trip; state.seat = null; state.lockToken = null; updateSummary(); try { const data = await api(`/api/viajes/${trip.id_viaje}/asientos`); renderSeats(data.asientos || []); go(2); } catch (err) { message(err.message); } }
+        function renderSeats(seats) { $('seatGrid').innerHTML = seats.map(a => { const free = a.estado === 'DISPONIBLE'; return `<button type="button" class="seat ${free ? 'available' : 'unavailable'}" ${free ? '' : 'disabled'} data-seat="${a.id_asiento}" aria-label="Asiento ${esc(a.numero_asiento)} ${esc(a.estado)}">${esc(a.numero_asiento)}</button>`; }).join(''); document.querySelectorAll('[data-seat]').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.seat.selected').forEach(x => x.classList.remove('selected')); b.classList.add('selected'); const a = seats.find(x => x.id_asiento === Number(b.dataset.seat)); state.seat = a; $('seatContinue').disabled = false; updateSummary(); })); $('seatContinue').disabled = true; }
+        $('seatContinue').addEventListener('click', async () => { if (!state.seat) return; try { const data = await api('/api/reservas/bloquear', { method: 'POST', body: JSON.stringify({ id_viaje: state.trip.id_viaje, id_asiento: state.seat.id_asiento }) }); state.lockToken = data.token; state.lockExpiry = data.vence; state.idempotencyKey = crypto.randomUUID(); go(3); } catch (err) { message(err.message); try { const fresh = await api(`/api/viajes/${state.trip.id_viaje}/asientos`); renderSeats(fresh.asientos || []); } catch (_) { } } });
+        $('passengerForm').addEventListener('submit', e => { e.preventDefault(); if (!state.lockToken) { message('El bloqueo del asiento no está disponible. Selecciona nuevamente.'); go(2); return; } updateSummary(); $('paymentAmount').textContent = money(state.trip.precio); $('paymentTotal').textContent = money(state.trip.precio); $('paymentSeat').textContent = state.seat.numero_asiento; go(4); });
+
+        // Contrato de integración: estos dos endpoints los debe implementar el backend.
+        // /api/pagos/crear debe crear una orden en el proveedor y devolver {checkout_url, pago_id}.
+        // /api/pagos/verificar debe consultar al proveedor desde el servidor y devolver {estado:'APROBADO'}.
+        $('payButton').addEventListener('click', async () => {
+            const btn = $('payButton'); btn.disabled = true; $('paymentMessage').textContent = 'Generando una orden de pago segura…';
+            try {
+                if (state.lockExpiry && new Date(state.lockExpiry) <= new Date()) throw new Error('El tiempo de reserva del asiento venció. Vuelve a seleccionar el asiento.');
+                const order = await api('/api/pagos/crear', { method: 'POST', body: JSON.stringify({ token_bloqueo: state.lockToken, clave_idempotencia: state.idempotencyKey, correo: $('emailPasajero').value, nombre: $('nombrePasajero').value }) });
+                if (!order.checkout_url || !order.pago_id) throw new Error('La pasarela no devolvió una dirección de pago válida.');
+                state.paymentId = order.pago_id; sessionStorage.setItem('appviaje_pago_pendiente', JSON.stringify({ pago_id: state.paymentId, token: state.lockToken, clave: state.idempotencyKey, viaje: state.trip, asiento: state.seat }));
+                window.location.assign(order.checkout_url);
+            } catch (err) { $('paymentMessage').textContent = err.message; btn.disabled = false; if (/venció|vencido/i.test(err.message)) go(2); }
+        });
+
+        // La pasarela debe retornar a /reserva?pago=retorno. Nunca se confía en un parámetro
+        // "success" del navegador: se consulta el estado real al servidor/proveedor.
+        async function verifyPaymentReturn() { const params = new URLSearchParams(location.search); if (params.get('pago') !== 'retorno') return; const raw = sessionStorage.getItem('appviaje_pago_pendiente'); if (!raw) { message('No encontramos una operación pendiente para verificar.'); return; } const pending = JSON.parse(raw); go(4); $('paymentMessage').textContent = 'Verificando el pago con el proveedor…'; try { const verified = await api('/api/pagos/verificar', { method: 'POST', body: JSON.stringify({ pago_id: pending.pago_id }) }); if (verified.estado !== 'APROBADO') throw new Error(verified.mensaje || 'El pago todavía no figura como aprobado.'); const reservation = await api('/api/reservas/confirmar', { method: 'POST', body: JSON.stringify({ token: pending.token, clave_idempotencia: pending.clave }) }); $('bookingCode').textContent = reservation.codigo_reserva; $('doneRoute').textContent = `${pending.viaje.origen} → ${pending.viaje.destino}`; $('doneSeat').textContent = pending.asiento.numero_asiento; sessionStorage.removeItem('appviaje_pago_pendiente'); history.replaceState({}, '', location.pathname); go(5); } catch (err) { $('paymentMessage').textContent = err.message; } }
+        $('nombrePasajero').addEventListener('input', updateSummary); verifyPaymentReturn();
+    })();
+</script>
+
 <script src="{{ url_for(
     'static',
     filename='js/confirmacion.js'
 ) }}" defer></script>
+
+<script src="/static/js/seats.js"></script>
+{% endblock %}
+
 {% endblock %}
