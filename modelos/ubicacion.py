@@ -6,7 +6,7 @@ from sqlalchemy import (
     Index
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Optional
 
 from modelos import db
 
@@ -53,7 +53,7 @@ class Ubicacion(db.Model):
         nullable=False
     )
 
-    referencia: Mapped[str | None] = mapped_column(
+    referencia: Mapped[Optional[str]] = mapped_column(
         String(250),
         nullable=True
     )
