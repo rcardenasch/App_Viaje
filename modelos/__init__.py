@@ -18,6 +18,7 @@ from modelos.asiento import Asiento
 from modelos.viaje import Viaje
 from modelos.reserva import Reserva
 from modelos.bloqueo_asiento import BloqueoAsiento
+from modelos.ubicacion import Ubicacion
 
 
 __all__ = [
@@ -28,5 +29,6 @@ __all__ = [
     "Asiento",
     "Viaje",
     "Reserva",
-    "BloqueoAsiento"
+    "BloqueoAsiento",
+    "Ubicacion"
 ]

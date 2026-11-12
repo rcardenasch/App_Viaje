@@ -16,10 +16,12 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING, List, Optional
 from modelos import db
 
+
 if TYPE_CHECKING:
     from modelos.bloqueo_asiento import BloqueoAsiento
     from modelos.reserva import Reserva
-    from modelos.vehiculo import Vehiculo 
+    from modelos.vehiculo import Vehiculo
+    from modelos.ubicacion import Ubicacion
 
 class Viaje(db.Model):
 
@@ -99,4 +101,28 @@ class Viaje(db.Model):
 
     bloqueos: Mapped[List["BloqueoAsiento"]] = relationship(
         back_populates="viaje"
+    )
+
+    id_origen: Mapped[Optional[int]] = mapped_column(
+    ForeignKey("ubicaciones.id_ubicacion"),
+    nullable=True,
+    index=True
+    )
+
+    id_destino: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("ubicaciones.id_ubicacion"),
+        nullable=True,
+        index=True
+    )
+
+    ubicacion_origen: Mapped[Optional["Ubicacion"]] = relationship(
+    "Ubicacion",
+    foreign_keys=[id_origen],
+    back_populates="viajes_origen"
+    )
+
+    ubicacion_destino: Mapped[Optional["Ubicacion"]] = relationship(
+        "Ubicacion",
+        foreign_keys=[id_destino],
+        back_populates="viajes_destino"
     )

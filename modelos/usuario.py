@@ -10,6 +10,7 @@ from modelos import db
 if TYPE_CHECKING:
     from modelos.reserva import Reserva
     from modelos.vehiculo import Vehiculo
+    from modelos.propietario import Propietario
 
 
 class Usuario(db.Model):
@@ -76,6 +77,12 @@ class Usuario(db.Model):
 
     reservas: Mapped[List["Reserva"]] = relationship(
         back_populates="pasajero"
+    )
+
+    perfil_propietario: Mapped[Optional["Propietario"]] = relationship(
+    back_populates="usuario",
+    uselist=False,
+    cascade="all, delete-orphan"
     )
 
     def __repr__(self):
